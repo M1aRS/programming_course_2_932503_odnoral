@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <math.h>
-
+#include <string>
 
 
 // Lab 07
@@ -66,7 +66,7 @@ int main() {
     for (int i = 0; i < loan_months; i++) {
         loan_debt = loan_value * loan_percent;
         loan_payment = (loan_value / (loan_months-i)) + loan_debt;
-        printf("%.2lf %.2lf %.2lf \n", loan_value, loan_debt, loan_payment);
+        printf("%-3d %-10.2lf | %-10.2lf | %-10.2lf \n", (i+1), loan_value, loan_debt, loan_payment);
         loan_value += loan_debt;
         loan_debt_total += loan_debt;
         loan_value -= loan_payment;
