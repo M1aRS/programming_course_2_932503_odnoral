@@ -64,14 +64,15 @@ int main() {
     std::cout << "(month): "; std::cin >> loan_months;
     loan_percent = loan_percent / (100*12);
     double loan_payment; double loan_debt, loan_debt_total = 0;
-    for (int i = 1; i <= loan_months; i++) {
+    for (int i = 0; i <= loan_months; i++) {
         loan_debt = loan_value * loan_percent;
+        loan_value += loan_debt;
         loan_debt_total += loan_debt;
-        loan_payment = (loan_value / loan_months) + loan_debt;
+        loan_payment = (loan_value / (loan_months-i) ) + loan_debt;
         // loan_payment = loan_value * ( (loan_percent * pow(1+loan_percent, loan_months) )/(pow(1 + loan_percent, loan_months) - 1) );
-        printf("%.2f %.2f %.2f \n", loan_value, loan_debt, loan_payment);
+        printf("'%.2f' '%.2f' '%.2f' \n", loan_value, loan_debt, loan_payment);
         loan_value -= loan_payment;
     }
-    printf("%,2f", loan_debt_total);
+    printf("'%.2f'", loan_debt_total);
     return 0;
 }
