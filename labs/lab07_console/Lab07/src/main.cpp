@@ -34,7 +34,7 @@ int main() {
         std::cout << "The value cannot be less than 0." << std::endl;
         return 1;
     }
-    long long fib_sum = 0;
+    long long fib_sum = 1;
     long long fib_prev = 1; long long fib_post_prev = 0;
     long long temp;
     int fib_count = 1;
@@ -44,11 +44,22 @@ int main() {
         fib_post_prev = temp;
         fib_sum += fib_prev;
         fib_count++;
-        //std::cout << fib_sum << " - current sum; var -" << fib_prev << std::endl;
+        std::cout << fib_sum << " - current sum; var - " << fib_prev << std::endl;
     }
-    printf("Number of elements: %d  Sum of elements: %x \n",fib_count, fib_sum);
-    //std::cout << fib_count << " " << fib_sum;
+    std::cout << "Number of elements: " << fib_count<< " Sum of elements : " << fib_sum << std::endl;
 
     // TODO: вычислите N и S (S <= MAX) и выведите результаты.
+
+    //Задание 3: кредиты
+    setlocale(LC_ALL, "Russian");
+    long loan_value; // = scanf("Сумма кредита (руб.): %d", &loan_value
+    double loan_percent; //= scanf("Процентная ставка (год.): %f", &loan_percent);
+    int loan_months; //= scanf_s("Срок (мес.) % d", &loan_months);
+    std::cout << "Сумма кредита (руб.): ";  std::cin >> loan_value; 
+    std::cout << "Процентная ставка (год.): "; std::cin >> loan_percent;
+    std::cout << "Срок (мес.) "; std::cin >> loan_months;
+    loan_percent = loan_percent / 100;
+    double loan_payment = loan_value * ( (loan_percent * pow((1 + loan_percent), loan_months)) / (pow((1 + loan_percent), loan_months) - 1 ));
+    std::cout << loan_payment;
     return 0;
 }
