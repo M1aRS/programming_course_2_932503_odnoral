@@ -1,5 +1,8 @@
 #include <iostream>
 #include <math.h>
+//#include <windows.h>
+#include <locale>
+
 
 // Lab 07
 // TODO: реализуйте решение по заданию в labs/lab07_console/README.md
@@ -9,6 +12,8 @@
 // - числа через пробел
 // - если несколько строк — в фиксированном порядке
 int main() {
+    /*SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);*/
     // Задание 1: вычисление значений функции.
     // Ввод: x0 — начальная точка интервала.
     double x0 = 0.0;
@@ -51,15 +56,22 @@ int main() {
     // TODO: вычислите N и S (S <= MAX) и выведите результаты.
 
     //Задание 3: кредиты
-    setlocale(LC_ALL, "Russian");
-    long loan_value; // = scanf("Сумма кредита (руб.): %d", &loan_value
+    double loan_value; // = scanf("Сумма кредита (руб.): %d", &loan_value
     double loan_percent; //= scanf("Процентная ставка (год.): %f", &loan_percent);
     int loan_months; //= scanf_s("Срок (мес.) % d", &loan_months);
-    std::cout << "Сумма кредита (руб.): ";  std::cin >> loan_value; 
-    std::cout << "Процентная ставка (год.): "; std::cin >> loan_percent;
-    std::cout << "Срок (мес.) "; std::cin >> loan_months;
-    loan_percent = loan_percent / 100;
-    double loan_payment = loan_value * ( (loan_percent * pow((1 + loan_percent), loan_months)) / (pow((1 + loan_percent), loan_months) - 1 ));
-    std::cout << loan_payment;
+    std::cout << "(RUB): ";  std::cin >> loan_value; 
+    std::cout << "(%): "; std::cin >> loan_percent;
+    std::cout << "(month): "; std::cin >> loan_months;
+    loan_percent = loan_percent / (100*12);
+    double loan_payment; double loan_debt, loan_debt_total = 0;
+    for (int i = 1; i <= loan_months; i++) {
+        loan_debt = loan_value * loan_percent;
+        loan_debt_total += loan_debt;
+        loan_payment = (loan_value / loan_months) + loan_debt;
+        // loan_payment = loan_value * ( (loan_percent * pow(1+loan_percent, loan_months) )/(pow(1 + loan_percent, loan_months) - 1) );
+        printf("%.2f %.2f %.2f \n", loan_value, loan_debt, loan_payment);
+        loan_value -= loan_payment;
+    }
+    printf("%,2f", loan_debt_total);
     return 0;
 }
