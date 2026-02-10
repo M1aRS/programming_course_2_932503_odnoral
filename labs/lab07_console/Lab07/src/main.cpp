@@ -1,7 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <math.h>
-//#include <windows.h>
-#include <locale>
+
 
 
 // Lab 07
@@ -12,13 +12,11 @@
 // - числа через пробел
 // - если несколько строк — в фиксированном порядке
 int main() {
-    /*SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);*/
     // Задание 1: вычисление значений функции.
     // Ввод: x0 — начальная точка интервала.
     double x0 = 0.0;
     if (!(std::cin >> x0)) {
-        return 0;
+        return 1;
     }
     else if ((x0 <= 0) || (x0 > 4)) {
         std::cout << "Your point must be in these borders (0;4]";
@@ -28,6 +26,7 @@ int main() {
     for (double i = x0; i <= 4; i = i + delta) {
         std::cout << i << ' ' << sin(i) / i << std::endl;
     }
+    printf("\n");
     // TODO: вычислите и выведите 10 значений функции на (0, 4].
 
     // Задание 2: сумма чисел Фибоначчи.
@@ -49,28 +48,27 @@ int main() {
         fib_post_prev = temp;
         fib_sum += fib_prev;
         fib_count++;
-        std::cout << fib_sum << " - current sum; var - " << fib_prev << std::endl;
+        //std::cout << fib_sum << " - current sum; var - " << fib_prev << std::endl;
     }
     std::cout << "Number of elements: " << fib_count<< " Sum of elements : " << fib_sum << std::endl;
-
+    printf("\n");
     // TODO: вычислите N и S (S <= MAX) и выведите результаты.
 
     //Задание 3: кредиты
-    double loan_value; // = scanf("Сумма кредита (руб.): %d", &loan_value
-    double loan_percent; //= scanf("Процентная ставка (год.): %f", &loan_percent);
-    int loan_months; //= scanf_s("Срок (мес.) % d", &loan_months);
-    std::cout << "(RUB): ";  std::cin >> loan_value; 
+    double loan_value; printf("(RUB): "); if (scanf("%lf", &loan_value) != 1) return 1;
+    double loan_percent; printf("(%%) : "); if (scanf("%lf", &loan_percent) != 1) return 1;
+    int loan_months; printf("(month) : ");  if (scanf("%d", &loan_months) != 1) return 1;
+    /*std::cout << "(RUB): ";  std::cin >> loan_value;
     std::cout << "(%): "; std::cin >> loan_percent;
-    std::cout << "(month): "; std::cin >> loan_months;
+    std::cout << "(month): "; std::cin >> loan_months;*/
     loan_percent = loan_percent / (100*12);
-    double loan_payment; double loan_debt, loan_debt_total = 0;
-    for (int i = 0; i <= loan_months; i++) {
+    double loan_payment, loan_debt, loan_debt_total = 0;
+    for (int i = 0; i < loan_months; i++) {
         loan_debt = loan_value * loan_percent;
+        loan_payment = (loan_value / (loan_months-i)) + loan_debt;
+        printf("%.2lf %.2lf %.2lf \n", loan_value, loan_debt, loan_payment);
         loan_value += loan_debt;
         loan_debt_total += loan_debt;
-        loan_payment = (loan_value / (loan_months-i) ) + loan_debt;
-        // loan_payment = loan_value * ( (loan_percent * pow(1+loan_percent, loan_months) )/(pow(1 + loan_percent, loan_months) - 1) );
-        printf("'%.2f' '%.2f' '%.2f' \n", loan_value, loan_debt, loan_payment);
         loan_value -= loan_payment;
     }
     printf("'%.2f'", loan_debt_total);
