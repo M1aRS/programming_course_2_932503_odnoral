@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <math.h>
-#include <string>
 
 
 // Lab 07
@@ -50,7 +49,7 @@ int main() {
         fib_count++;
         //std::cout << fib_sum << " - current sum; var - " << fib_prev << std::endl;
     }
-    std::cout << "Number of elements: " << fib_count<< " Sum of elements : " << fib_sum << std::endl;
+    std::cout << "N = " << fib_count<< "; S = " << fib_sum << std::endl;
     printf("\n");
     // TODO: вычислите N и S (S <= MAX) и выведите результаты.
 
@@ -58,15 +57,12 @@ int main() {
     double loan_value; printf("(RUB): "); if (scanf("%lf", &loan_value) != 1) return 1;
     double loan_percent; printf("(%%) : "); if (scanf("%lf", &loan_percent) != 1) return 1;
     int loan_months; printf("(month) : ");  if (scanf("%d", &loan_months) != 1) return 1;
-    /*std::cout << "(RUB): ";  std::cin >> loan_value;
-    std::cout << "(%): "; std::cin >> loan_percent;
-    std::cout << "(month): "; std::cin >> loan_months;*/
     loan_percent = loan_percent / (100*12);
     double loan_payment, loan_debt, loan_debt_total = 0;
     for (int i = 0; i < loan_months; i++) {
         loan_debt = loan_value * loan_percent;
         loan_payment = (loan_value / (loan_months-i)) + loan_debt;
-        printf("%-3d %-10.2lf | %-10.2lf | %-10.2lf \n", (i+1), loan_value, loan_debt, loan_payment);
+        printf("%-3d | %-10.2lf | %-10.2lf | %-10.2lf \n", (i+1), loan_value, loan_debt, loan_payment);
         loan_value += loan_debt;
         loan_debt_total += loan_debt;
         loan_value -= loan_payment;
