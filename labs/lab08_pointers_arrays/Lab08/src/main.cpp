@@ -14,6 +14,25 @@ void zadanie2_func(int& x, int* y) {
     *y *= 3;
 }
 
+void zadanie3_arr_gen(int *arr, int N) {
+    int temp, new_rand, temp_index;
+    for (int i = 0; i < N; i++) {
+        new_rand = rand() % 100;
+        printf("%d ", new_rand);
+        arr[i] = new_rand;
+        temp_index = i;
+        //std::cout << zad3_arr_static[i] << " ";
+        while ((temp_index > 0 && temp_index < N) && (arr[temp_index] < arr[temp_index - 1])) {
+            temp = arr[temp_index];
+            arr[temp_index] = arr[temp_index - 1];
+            arr[temp_index - 1] = temp;
+            temp_index--;
+        }
+
+    }
+    printf("\n");
+}
+
 int main() {
     srand(time(NULL));
     // Упражнение 1: объяснить использование типов/переменных в коде (без ввода).
@@ -32,24 +51,30 @@ int main() {
     // TODO: реализуйте 4 варианта заполнения и выведите 10 значений для каждого.
     const int zad3_length = 10;
     int zad3_arr_static[zad3_length];
+    for (int i = 0; i < zad3_length; i++) zad3_arr_static[i] = i * i;
+
+    int zad3_arr_static_ptr[zad3_length];
+    for (int i = 0; i < zad3_length; i++) *(zad3_arr_static_ptr + i) = i * i;
+
     int *zad3_arr_dyn; zad3_arr_dyn = new int[zad3_length];
-    int temp, new_rand, temp_index;
-    for (int i = 0; i < zad3_length; i++) {
-        new_rand = rand() % 100;
-        printf("%d ", new_rand);
-        zad3_arr_static[i] = new_rand;
-        temp_index = i;
-            //std::cout << zad3_arr_static[i] << " ";
-        while ((temp_index > 0 && temp_index < zad3_length) && (zad3_arr_static[temp_index] < zad3_arr_static[temp_index - 1])) {
-            temp = zad3_arr_static[temp_index];
-            zad3_arr_static[temp_index] = zad3_arr_static[temp_index - 1];
-            zad3_arr_static[temp_index - 1] = temp;
-            temp_index--;
-            }
-        
-    }
-    printf("\n");
-    for (int i = 0; i < 10; i++) std::cout << zad3_arr_static[i] << " ";
+    for (int i = 0; i < zad3_length; i++) zad3_arr_dyn[i] = i * i;
+
+    int* zad3_arr_dyn_ptr; zad3_arr_dyn_ptr = new int[zad3_length];
+    for (int i = 0; i < zad3_length; i++) *(zad3_arr_dyn_ptr + i) = i * i;
+
+    delete[] zad3_arr_dyn; delete[] zad3_arr_dyn_ptr;
+
+    int zad3_N1, zad3_N2;
+    if (!(std::cin >> zad3_N1 >> zad3_N2)) return 1;
+    int *zad32_arr1; int* zad32_arr2;
+    zad32_arr1 = new int[zad3_N1]; zad32_arr2 = new int[zad3_N2];
+
+    zadanie3_arr_gen(zad32_arr1, zad3_N1);
+    for (int i = 0; i < zad3_N1; i++) std::cout << zad32_arr1[i] << " ";
+    
+    zadanie3_arr_gen(zad32_arr2, zad3_N2);
+    for (int i = 0; i < zad3_N2; i++) std::cout << zad32_arr2[i] << " ";
+
 
     // Упражнение 4: линейный самоадресуемый список из 10 элементов.
     // TODO: сформируйте список и выведите элементы по порядку.
