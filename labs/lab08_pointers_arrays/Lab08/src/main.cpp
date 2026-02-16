@@ -2,6 +2,12 @@
 #include <cstdlib>
 #include <ctime>
 
+struct Node
+{
+    int data;
+    Node* prev;
+    Node* next;
+};
 // Lab 08
 // TODO: реализуйте решение по заданию в labs/lab08_pointers_arrays/README.md
 //
@@ -50,6 +56,8 @@ int* zadanie3_arr_merge(int* arr1, int* arr2, int size1, int size2) {
     return result;
 }
 
+
+
 int main() {
     srand(time(NULL));
     // Упражнение 1: объяснить использование типов/переменных в коде (без ввода).
@@ -95,9 +103,31 @@ int main() {
     zad32_arr3 = zadanie3_arr_merge(zad32_arr1, zad32_arr2, zad3_N1, zad3_N2);
     for (int i = 0; i < zad3_N2 + zad3_N1; i++) std::cout << zad32_arr3[i] << " ";
     printf("\n");
+    delete[]zad32_arr1; delete[]zad32_arr2; delete[]zad32_arr3;
     // Упражнение 4: линейный самоадресуемый список из 10 элементов.
     // TODO: сформируйте список и выведите элементы по порядку.
 
+    Node* head = nullptr; Node* last = nullptr;
 
+    for (int i = 1; i <= 10; i++) {
+        Node* newNode = new Node;
+        newNode->data = i*10;
+        newNode->next = nullptr;
+
+        if (head == nullptr) {
+            head = newNode;
+            newNode->prev = nullptr;
+        }
+        else {
+            last->next = newNode;
+            newNode->prev = last;
+        }
+        last = newNode;
+    }
+    Node* aasd = head;
+    while (aasd != nullptr) {
+        std::cout << aasd->data << " ";
+        aasd = aasd->next;
+    }
     return 0;
 }
