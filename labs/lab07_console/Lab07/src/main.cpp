@@ -68,5 +68,7 @@ int main() {
         loan_value -= loan_payment;
     }
     printf("'%.2f'", loan_debt_total);
+    std::ignore(10000, "\n");
+    std::cin.get();
     return 0;
 }
