@@ -18,7 +18,7 @@ void zadanie3_arr_gen(int *arr, int N) {
     int temp, new_rand, temp_index;
     for (int i = 0; i < N; i++) {
         new_rand = rand() % 100;
-        printf("%d ", new_rand);
+        //printf("%d ", new_rand);
         arr[i] = new_rand;
         temp_index = i;
         //std::cout << zad3_arr_static[i] << " ";
@@ -30,7 +30,24 @@ void zadanie3_arr_gen(int *arr, int N) {
         }
 
     }
-    printf("\n");
+    //printf("\n");
+}
+
+int* zadanie3_arr_merge(int* arr1, int* arr2, int size1, int size2) {
+    int i = 0; int j = 0; int k = 0;
+    int sizeResult = size1 + size2;
+    int* result; result = new int[sizeResult];
+    while (i < size1 && j < size2) {
+        if (arr1[i] < arr2[j]) {
+            result[k++] = arr1[i++];
+        }
+        else {
+            result[k++] = arr2[j++];
+        }
+    }
+    while (i < size1) result[k++] = arr1[i++];
+    while (j < size2) result[k++] = arr2[j++];
+    return result;
 }
 
 int main() {
@@ -66,17 +83,21 @@ int main() {
 
     int zad3_N1, zad3_N2;
     if (!(std::cin >> zad3_N1 >> zad3_N2)) return 1;
-    int *zad32_arr1; int* zad32_arr2;
+    int *zad32_arr1; int* zad32_arr2; int* zad32_arr3;
     zad32_arr1 = new int[zad3_N1]; zad32_arr2 = new int[zad3_N2];
 
     zadanie3_arr_gen(zad32_arr1, zad3_N1);
     for (int i = 0; i < zad3_N1; i++) std::cout << zad32_arr1[i] << " ";
-    
+    printf("\n");
     zadanie3_arr_gen(zad32_arr2, zad3_N2);
     for (int i = 0; i < zad3_N2; i++) std::cout << zad32_arr2[i] << " ";
-
-
+    printf("\n");
+    zad32_arr3 = zadanie3_arr_merge(zad32_arr1, zad32_arr2, zad3_N1, zad3_N2);
+    for (int i = 0; i < zad3_N2 + zad3_N1; i++) std::cout << zad32_arr3[i] << " ";
+    printf("\n");
     // Упражнение 4: линейный самоадресуемый список из 10 элементов.
     // TODO: сформируйте список и выведите элементы по порядку.
+
+
     return 0;
 }
