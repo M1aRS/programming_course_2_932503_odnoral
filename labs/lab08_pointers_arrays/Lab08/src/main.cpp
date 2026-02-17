@@ -76,16 +76,32 @@ int main() {
     // TODO: реализуйте 4 варианта заполнения и выведите 10 значений для каждого.
     const int zad3_length = 10;
     int zad3_arr_static[zad3_length];
-    for (int i = 0; i < zad3_length; i++) zad3_arr_static[i] = i * i;
+    for (int i = 0; i < zad3_length; i++) { 
+        zad3_arr_static[i] = i * i; 
+        std::cout << zad3_arr_static[i] << '\t';
+    }
+    printf("\n");
 
     int zad3_arr_static_ptr[zad3_length];
-    for (int i = 0; i < zad3_length; i++) *(zad3_arr_static_ptr + i) = i * i;
+    for (int i = 0; i < zad3_length; i++) {
+        *(zad3_arr_static_ptr + i) = i * i; 
+        std::cout << zad3_arr_static_ptr[i] << '\t';
+    }
+    printf("\n");
 
     int *zad3_arr_dyn; zad3_arr_dyn = new int[zad3_length];
-    for (int i = 0; i < zad3_length; i++) zad3_arr_dyn[i] = i * i;
+    for (int i = 0; i < zad3_length; i++) {
+        zad3_arr_dyn[i] = i * i;
+        std::cout << zad3_arr_dyn[i] << '\t';
+    }
+    printf("\n");
 
     int* zad3_arr_dyn_ptr; zad3_arr_dyn_ptr = new int[zad3_length];
-    for (int i = 0; i < zad3_length; i++) *(zad3_arr_dyn_ptr + i) = i * i;
+    for (int i = 0; i < zad3_length; i++) {*
+        (zad3_arr_dyn_ptr + i) = i * i;
+        std::cout << zad3_arr_dyn_ptr[i] << '\t';
+    }
+    printf("\n");
 
     delete[] zad3_arr_dyn; delete[] zad3_arr_dyn_ptr;
 
@@ -104,9 +120,9 @@ int main() {
     for (int i = 0; i < zad3_N2 + zad3_N1; i++) std::cout << zad32_arr3[i] << " ";
     printf("\n");
     delete[]zad32_arr1; delete[]zad32_arr2; delete[]zad32_arr3;
+
     // Упражнение 4: линейный самоадресуемый список из 10 элементов.
     // TODO: сформируйте список и выведите элементы по порядку.
-
     Node* head = nullptr; Node* last = nullptr;
 
     for (int i = 1; i <= 10; i++) {
@@ -128,6 +144,12 @@ int main() {
     while (aasd != nullptr) {
         std::cout << aasd->data << " ";
         aasd = aasd->next;
+    }
+
+    while (head != nullptr) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
     }
     return 0;
 }
