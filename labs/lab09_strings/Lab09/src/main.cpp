@@ -8,7 +8,7 @@
 
 int main() {
     // Упражнеие 1.
-    int word_count = 0;
+
     char f_first_word[200]; char f_second_word[200];
     std::cin.getline(f_first_word, 200);
     std::cout << "Length: " << strlen(f_first_word) << "\n";
@@ -23,21 +23,37 @@ int main() {
     std::cout << "Length: " << len1 << "\n";  std::getline(std::cin, f_second_string);
     f_temp_string = f_first_string; f_temp_string.append(" with " + f_second_string);
     std::cout << f_temp_string << "\n";
-    std::cout << f_temp_string.substr(0, len1 + len2 - 1) << "\n";
+    std::cout << f_temp_string.substr(0, 3) << "\n";
 
     // Упражнение 4: ввод количества слов и самих слов.
-    if (!(std::cin >> word_count)) {
+    int word_count = 0;
+    if (!(std::cin >> word_count) || word_count > 20) {
         return 0;
     }
-
-    std::vector<std::string> words;
-    words.reserve(word_count);
-    for (int i = 0; i < word_count; ++i) {
-        std::string word;
-        std::cin >> word;
-        words.push_back(word);
+    std::cin.ignore();
+    char** fr_array_words;
+    fr_array_words = new char* [word_count];
+    for (int i = 0; i < word_count; i++) {
+        fr_array_words[i] = new char[10];
+        std::cin.getline(fr_array_words[i], 10);
     }
-    
-    // TODO: выведите слова с четными номерами (2, 4, 6, ...), по одному в строке.
+    for (int i = 1; i < word_count; i = i + 2) std::cout << fr_array_words[i] << " ";
+    std::cout << "\n";
+    int word_count_2 = 0;
+    if (!(std::cin >> word_count_2) || word_count_2 > 20) {
+        return 0;
+    }
+    std::cin.ignore();
+    std::string fr_array_strings[20];
+    for (int i = 0; i < word_count_2; i++) {
+        getline(std::cin, fr_array_strings[i]);
+    }
+    for (int i = 1; i < word_count_2; i = i + 2) std::cout << fr_array_strings[i] << " ";
+    std::cout << "\n";
+
+    for (int i = 0; i < word_count; i++) {
+        delete[] fr_array_words[i];
+    }
+    delete[] fr_array_words;
     return 0;
 }
