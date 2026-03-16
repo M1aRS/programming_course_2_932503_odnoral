@@ -203,7 +203,11 @@ int _tmain (int argc, _TCHAR* argv[]){
     cout << "n = " << n << ", m = " << m << endl;
 
     return 0
+<<<<<<< HEAD
 }
+=======
+}_
+>>>>>>> 193d881 (lab 8 task 1 added)
 
 double g(int d, int t)
 {
