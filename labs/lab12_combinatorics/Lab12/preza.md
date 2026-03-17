@@ -8,16 +8,15 @@
 
 ```cpp
 #include <iostream>
-#include <iomanip> // Для setw (красивый вывод)
+
 
 using namespace std;
 
-// Глобальные переменные (указатели для динамических массивов)
-int* currentPermutation; // Массив P из лекции (хранит саму перестановку)
-int* isNumberUsed;       // Массив R из лекции (флаги: 1 - число занято, 0 - свободно)
-int totalElements;       // Переменная n из лекции
 
-// Функция вывода текущей перестановки
+int* currentPermutation;
+int* isNumberUsed;
+int totalElements;
+
 void printResult() {
     for (int i = 0; i < totalElements; i++) {
         cout << setw(3) << currentPermutation[i];
@@ -25,57 +24,41 @@ void printResult() {
     cout << endl;
 }
 
-// Рекурсивная процедура генерации (аналог per(k) из лекции)
-void generatePermutations(int currentPos) {
-    // Цикл перебора всех возможных чисел от 1 до n
-    for (int num = 1; num <= totalElements; num++) {
-        
-        // Если число 'num' еще не использовано в этой ветке рекурсии
-        if (isNumberUsed[num] == 0) {
-            
-            currentPermutation[currentPos] = num; // Записываем число на текущую позицию
-            isNumberUsed[num] = 1;                // Помечаем число как занятое
 
-            // Если это была последняя позиция (currentPos == n-1)
+void generatePermutations(int currentPos) {
+    for (int num = 1; num <= totalElements; num++) {
+        if (isNumberUsed[num] == 0) {
+            currentPermutation[currentPos] = num;
+            isNumberUsed[num] = 1;
+
             if (currentPos == totalElements - 1) {
-                printResult(); // Выводим готовую перестановку
+                printResult();
             } 
             else {
-                // Иначе идем заполнять следующую позицию
                 generatePermutations(currentPos + 1);
             }
-
-            // БЭКТРЕКИНГ (Откат): освобождаем число для других вариантов
             isNumberUsed[num] = 0;
         }
     }
 }
 
 int main() {
-    setlocale(LC_ALL, "rus");
-
-    cout << "Введите n (мощность множества): ";
     if (!(cin >> totalElements) || totalElements <= 0) {
         cout << "Ошибка ввода!" << endl;
         return 1;
     }
 
-    // Выделение динамической памяти
+
     currentPermutation = new int[totalElements];
-    
-    // Для флагов выделяем n + 1 элементов, чтобы обращаться по индексам 1..n
     isNumberUsed = new int[totalElements + 1];
 
-    // Инициализация массивов (обнуление)
     for (int i = 0; i < totalElements; i++) currentPermutation[i] = 0;
     for (int i = 0; i <= totalElements; i++) isNumberUsed[i] = 0;
 
     cout << "Список всех перестановок для n = " << totalElements << ":" << endl;
     
-    // Запуск рекурсии с 0-й позиции массива
     generatePermutations(0);
 
-    // Очистка динамической памяти
     delete[] currentPermutation;
     delete[] isNumberUsed;
 
