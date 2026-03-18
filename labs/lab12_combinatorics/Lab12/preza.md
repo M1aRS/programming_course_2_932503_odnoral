@@ -7,68 +7,37 @@
 ### Исходный код
 
 ```cpp
-#include <iostream>
+№1 #include <iostream>
+№2 using namespace std;
 
+№3 int *P, *R, n;
 
-using namespace std;
+№4 void per(int k) {
+№5  for (int i = 1; i <= n; i++) {
+№6      if (R[i] == 0) { 
+№7          P[k] = i; R[i] = 1;
+№8          
+№9          if (k == n) { 
+№10              for (int j = 1; j <= n; j++) cout << P[j] << " ";
+№11              cout << endl;
+№12          } else per(k + 1);          
+№13          R[i] = 0;          
+№14      }
+№15  }
+№16 }
 
-
-int* currentPermutation;
-int* isNumberUsed;
-int totalElements;
-
-void printResult() {
-    for (int i = 0; i < totalElements; i++) {
-        cout << setw(3) << currentPermutation[i];
-    }
-    cout << endl;
-}
-
-
-void generatePermutations(int currentPos) {
-    for (int num = 1; num <= totalElements; num++) {
-        if (isNumberUsed[num] == 0) {
-            currentPermutation[currentPos] = num;
-            isNumberUsed[num] = 1;
-
-            if (currentPos == totalElements - 1) {
-                printResult();
-            } 
-            else {
-                generatePermutations(currentPos + 1);
-            }
-            isNumberUsed[num] = 0;
-        }
-    }
-}
-
-int main() {
-    if (!(cin >> totalElements) || totalElements <= 0) {
-        cout << "Ошибка ввода!" << endl;
-        return 1;
-    }
-
-
-    currentPermutation = new int[totalElements];
-    isNumberUsed = new int[totalElements + 1];
-
-    for (int i = 0; i < totalElements; i++) currentPermutation[i] = 0;
-    for (int i = 0; i <= totalElements; i++) isNumberUsed[i] = 0;
-
-    cout << "Список всех перестановок для n = " << totalElements << ":" << endl;
-    
-    generatePermutations(0);
-
-    delete[] currentPermutation;
-    delete[] isNumberUsed;
-
-    return 0;
-}
+№17 int main() {
+№18     n = 3;
+№19     P = new int[n + 1]; 
+№20     R = new int[n + 1]{0};
+№21     per(1);
+№22     return 0;
+№23 }
 ```
 
 ---
 
-### Шаг 1: Начальное состояние
+### Шаг 1: Объявление переменных
 **main** вызывает `per(1)`
 
 | Статическая память | Стек (Вызовы) |
