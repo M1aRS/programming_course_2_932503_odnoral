@@ -1,18 +1,51 @@
 #include <iostream>
+#include <ctime>
 
 // Lab 12
 int solution_count = 0;
 
+int *rowsUsed, *mainDiagonalsUsed, *antiDiagonalsUsed, *queenPositions, boardSize;
+
+void findQueens(int col){
+    for (int row = 0; row < boardSize; row++){
+        int mainDiagInd = col - row + (boardSize - 1);
+        int antiDiagInd = col + row;
+
+        if (rowsUsed[row] == 0 && mainDiagonalsUsed[mainDiagInd] == 0 && antiDiagonalsUsed[antiDiagInd] == 0){
+            rowsUsed[row] = 1;
+            mainDiagonalsUsed[mainDiagInd] = 1; 
+            antiDiagonalsUsed[antiDiagInd] = 1;
+            queenPositions[col] = row;
+            
+            if (col == boardSize - 1){
+                solution_count++;
+                /*for (int row_i = 0; row_i < boardSize; row_i++){
+                    for (int col_i = 0; col_i < boardSize; col_i++){
+                        if (queenPositions[col_i] == row_i) { std::cout << "Q "; }
+                        else { std::cout << ". "; }
+                    }
+                    printf("\n");
+                }   
+                printf("\n");*/
+            } else { findQueens(col + 1); }
+
+            rowsUsed[row] = 0;
+            mainDiagonalsUsed[mainDiagInd] = 0;
+            antiDiagonalsUsed[antiDiagInd] = 0;
+        }
+    }
+}
+
 void v_lob_i_tupo(char **matrix, int n, int row) {
     if (row == n){
         solution_count++;
-        printf("Solutions: %d \n", solution_count);
+        /*printf("Solutions: %d \n", solution_count);
         for (int i = 0; i < n; i++){
             for (int j = 0; j < n; j++){
                 printf("%c ", matrix[i][j]);
             }
             printf("\n");
-        }
+        }*/
     }
 
     for (int col = 0; col < n; col++) {
@@ -33,26 +66,36 @@ void v_lob_i_tupo(char **matrix, int n, int row) {
 }
 
 int main() {
-    int N;
-    if (!(std::cin >> N)){
+    if (!(std::cin >> boardSize)){
         printf("Error! \n");
         return 1;
     }
     char **matrix;
-    matrix = new char*[N];
-    for (int i = 0; i < N; i++){
-        matrix[i] = new char[N];
+    int diagSize = 2*boardSize - 1;
+    rowsUsed = new int[boardSize]; queenPositions = new int[boardSize];
+    mainDiagonalsUsed = new int[diagSize]; antiDiagonalsUsed = new int[diagSize];
+    for (int i = 0; i < boardSize; i++){ rowsUsed[i] = 0; queenPositions[i] = 0; }
+    for (int i = 0; i < diagSize; i++){ mainDiagonalsUsed[i] = 0; antiDiagonalsUsed[i] = 0; }
+
+    matrix = new char*[boardSize];
+    for (int i = 0; i < boardSize; i++){
+        matrix[i] = new char[boardSize];
     }
-    for (int i = 0; i < N; i++){
-        for (int j = 0; j < N; j++){
+    for (int i = 0; i < boardSize; i++){
+        for (int j = 0; j < boardSize; j++){
             matrix[i][j] = '.';
         }
     }
-
-    v_lob_i_tupo(matrix, N, 0);
-    printf("\nSolutions for N=%d: %d\n", N, solution_count);
-    for (int i = 0; i < N; i++) delete[] matrix[i];
-    delete[] matrix;
+    findQueens(0);
+    printf("Solutions for N=%d: %d\n", boardSize, solution_count);
+    printf("|-------------------------------------------------| \n");
+    solution_count = 0;
+    v_lob_i_tupo(matrix, boardSize, 0);
+    printf("\nSolutions for N=%d: %d\n", boardSize, solution_count);
     
+    for (int i = 0; i < boardSize; i++) delete[] matrix[i];
+    delete[] matrix;
+    delete[] rowsUsed; delete[] queenPositions;
+    delete[] mainDiagonalsUsed; delete[]antiDiagonalsUsed;
     return 0;
 }
