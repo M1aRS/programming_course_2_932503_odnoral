@@ -86,12 +86,26 @@ int main() {
             matrix[i][j] = '.';
         }
     }
+    clock_t t1 = clock();
     findQueens(0);
+    clock_t t2 = clock();
+    double dur1 = double(t2 - t1) / CLOCKS_PER_SEC;
+    printf("findQueens time: %.6f s\n", dur1);
     printf("Solutions for N=%d: %d\n", boardSize, solution_count);
     printf("|-------------------------------------------------| \n");
+
     solution_count = 0;
+    clock_t t3 = clock();
     v_lob_i_tupo(matrix, boardSize, 0);
+    clock_t t4 = clock();
+    double dur2 = double(t4 - t3) / CLOCKS_PER_SEC;
+    printf("v_lob_i_tupo time: %.6f s\n", dur2);
     printf("\nSolutions for N=%d: %d\n", boardSize, solution_count);
+    if (dur2 > 0.0) {
+        printf("Ratio (findQueens / v_lob_i_tupo): %.6f\n", dur1 / dur2);
+    } else {
+        printf("Ratio (findQueens / v_lob_i_tupo): INF (second duration is zero)\n");
+    }
     
     for (int i = 0; i < boardSize; i++) delete[] matrix[i];
     delete[] matrix;
