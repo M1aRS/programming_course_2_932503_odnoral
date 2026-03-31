@@ -45,6 +45,24 @@ void triangularize(double **matrix, int rows, int cols) {
     }
 }
 
+void solve_and_print(double **matrix, int rows, int cols) {
+    int n = cols - 1;
+    double *x = new double[n];
+
+    for (int i = n - 1; i >= 0; i--) {
+        x[i] = matrix[i][n];
+        for (int j = i + 1; j < n; j++) {
+            x[i] -= matrix[i][j] * x[j];
+        }
+    }
+    printf("Result:\n");
+    for (int i = 0; i < n; i++) {
+        printf("x%d = %.2lf\n", i + 1, x[i]);
+    }
+
+    delete[] x; 
+}
+
 int main() {
     FILE* input_file = fopen("input.txt", "r");
     if (input_file == nullptr) {
@@ -66,6 +84,7 @@ int main() {
     printf("----- \n");
     triangularize(coeffitients, M, N);
     print_matrix(coeffitients, M, N);
+    solve_and_print(coeffitients, M, N);
     fclose(input_file);
     return 0;
 }
