@@ -4,15 +4,6 @@
 
 // Lab 13
 
-/*void print_matrix(double **matrix, int rows, int cols) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            printf("%.3lf ", matrix[i][j]);
-        }
-        printf("\n");
-    }
-}*/
-
 void print_matrix_to_file(FILE* out, double **matrix, int rows, int cols) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -26,7 +17,12 @@ void print_matrix_to_file(FILE* out, double **matrix, int rows, int cols) {
     printf("----- \n");
 }
 
-int triangularize(double **matrix, int rows, int cols) {
+int triangularize(double **matrix, int rows, int cols, double *X, int *L, int &r) {
+    for (int i = 0; i < cols; i++) L[i] = i;
+
+    if (cols < rows) { r = cols; }
+    else { r = rows; }
+
     for (int i = 0; i < cols-1; i++) {
         int v = i;
         for (int j = i + 1; j < rows; j++) {
@@ -63,24 +59,6 @@ int triangularize(double **matrix, int rows, int cols) {
 
     return 1; //матрица невырождена и совместна
 }
-
-/*void solve_and_print(double **matrix, int rows, int cols) {
-    int n = cols - 1;
-    double *x = new double[n];
-
-    for (int i = n - 1; i >= 0; i--) {
-        x[i] = matrix[i][n];
-        for (int j = i + 1; j < n; j++) {
-            x[i] -= matrix[i][j] * x[j];
-        }
-    }
-    printf("Result:\n");
-    for (int i = 0; i < n; i++) {
-        printf("x%d = %.2lf\n", i + 1, x[i]);
-    }
-
-    delete[] x; 
-}*/
 
 void solve_and_write_roots(FILE* out, double **matrix, int rows, int cols) {
     int n = rows; 
