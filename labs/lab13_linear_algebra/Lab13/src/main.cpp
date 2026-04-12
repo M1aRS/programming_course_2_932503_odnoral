@@ -21,18 +21,26 @@ int triangularize(double **matrix, int rows, int cols, double *X, int *L, int &r
     for (int i = 0; i < cols; i++) L[i] = i;
 
     if (cols < rows) { r = cols; }
-    else { r = rows; }
+    else { r = rows; } // ?? r =  (cols < rows) ? cols : rows
 
-    for (int i = 0; i < cols-1; i++) {
-        int v = i;
-        for (int j = i + 1; j < rows; j++) {
-            if (std::abs(matrix[j][i]) > std::abs(matrix[v][i])) {
-                v = j;
+    int i = 0; 
+
+    while (i < r) {
+        int v = i, u = i;
+        double max_val = 0;
+
+        for (int j = i; j < rows; j++){
+            for (int k = i; k < cols; k++){
+                if (std::abs(matrix[j][k]) > max_val){
+                    max_val = std::abs(matrix[j][k]);
+                    v = j; u = k; // столбец и строка максимума
+                }
             }
         }
 
-        if (std::abs(matrix[v][i]) < 1e-12) {
-            return -1; //матрица вырождена
+        if (max_val < 1e-12){
+            r = i; 
+            break;
         }
 
         if (v != i){
@@ -43,21 +51,46 @@ int triangularize(double **matrix, int rows, int cols, double *X, int *L, int &r
             }
         }
 
-        for (int k = i + 1; k < rows; k++) {
-            double factor = matrix[k][i]/matrix[i][i];
-            for (int j = i; j < cols; j++) {
-                matrix[k][j] -= factor * matrix[i][j];
+        if (u != i){
+            for (int k = 0; k < rows; k++){
+                double temp = matrix[k][i];
+                matrix[k][i] = matrix[k][u];
+                matrix[k][u] = temp;
+            }
+            int tempL = L[i];
+            L[i] = L[u];
+            L[u] = tempL;
+        }
+
+        double c = matrix[i][i];
+        for (int j = i; j <= cols; j++){
+            matrix[i][j] /= c;
+        }
+
+        for (int k = 0; k < rows; k++){
+            if (k != i){
+                double factor = matrix[k][i];
+                for (int j = i; j <= cols; j++) matrix[k][j] -= factor * matrix[i][j];
             }
         }
-    } //ttestasdfc
-
-    for (int i = cols; i < rows; i++){
-        if (std::abs(matrix[i][cols-1]) > 1e-12) {
-            return 0; //матрица несовместна
-        }
+        i++;
     }
 
-    return 1; //матрица невырождена и совместна
+    int check_i = r;
+    while (check_i < rows && std::abs(matrix[check_i][rows]) < 1e-12) check_i++;
+    if (check_i < rows) return 0; //система не совместима
+
+    if (r == cols) { // в этом случае решение одно-единственное
+        for (int j = 0; j < cols; j++) X[L[j]] = matrix[j][cols];
+        return 1;
+    } else {
+        for (int k = r; k < cols; k++) X[L[k]] = L[k];
+
+        for (int j = 0; j < r; j++){
+            X[L[j]] = matrix[j][cols];
+            for (int k = r; k < cols; k++) X[L[j]] -= matrix[j][k] * X[L[k]];
+        }
+    }
 }
 
 void solve_and_write_roots(FILE* out, double **matrix, int rows, int cols) {
@@ -101,8 +134,12 @@ int main() {
         }
     }
 
+    double *X = new double[N];
+    int *L = new int[N];
+    int r = 0;
+
+    int status = triangularize(coeffitients, M, N, X, L, r);
     
-    int status = triangularize(coeffitients, M, N);
     fprintf(output_file, "Triangular Matrix:\n");
     print_matrix_to_file(output_file, coeffitients, M, N);
 
