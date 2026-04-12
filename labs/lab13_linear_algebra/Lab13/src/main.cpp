@@ -44,7 +44,7 @@ int triangularize(double **matrix, int rows, int cols, double *X, int *L, int &r
         }
 
         if (v != i){
-            for (int k = i; k < cols; k++){
+            for (int k = i; k <= cols; k++){
                 double temp = matrix[i][k];
                 matrix[i][k] = matrix[v][k];
                 matrix[v][k] = temp;
@@ -77,7 +77,7 @@ int triangularize(double **matrix, int rows, int cols, double *X, int *L, int &r
     }
 
     int check_i = r;
-    while (check_i < rows && std::abs(matrix[check_i][rows]) < 1e-12) check_i++;
+    while (check_i < rows && std::abs(matrix[check_i][cols]) < 1e-12) check_i++;
     if (check_i < rows) return 0; //система не совместима
 
     if (r == cols) { // в этом случае решение одно-единственное
@@ -90,29 +90,51 @@ int triangularize(double **matrix, int rows, int cols, double *X, int *L, int &r
             X[L[j]] = matrix[j][cols];
             for (int k = r; k < cols; k++) X[L[j]] -= matrix[j][k] * X[L[k]];
         }
+        return -1;
     }
 }
 
-void solve_and_write_roots(FILE* out, double **matrix, int rows, int cols) {
-    int n = rows; 
-    double *x = new double[n];
-    fprintf(out, "Roots:\n");
-    for (int i = n - 1; i >= 0; i--) {
-        x[i] = matrix[i][cols - 1];
-        for (int j = i + 1; j < n; j++) {
-            x[i] -= matrix[i][j] * x[j];
+void solve_and_write_roots(FILE* out, int rows, int cols, int status, int r, int *L, double *X) {
+    if (status == -1) {
+            bool first = true;
+            for (int v = 0; v < cols; v++) {
+                // Ищем, является ли переменная v свободной
+                bool is_free = false;
+                for (int k = r; k < cols; k++) {
+                    if (L[k] == v) {
+                        is_free = true;
+                        break;
+                    }
+                }
+                
+                if (is_free) {
+                    if (!first) {
+                        printf(", ");
+                        fprintf(out, ", ");
+                    }
+                    printf("x%d", v + 1);
+                    fprintf(out, "x%d", v + 1);
+                    first = false;
+                }
+            }
+            printf(" are free\n");
+            fprintf(out, " are free\n");
         }
-        x[i] /= matrix[i][i]; 
-    }
 
-    for (int i = 0; i < n; i++) {
-        fprintf(out, "x%d = %.2lf", i + 1, x[i]);
-        printf("x%d = %.2lf\n", i + 1, x[i]);
-        if (i < n - 1) fprintf(out, "  "); 
+    for (int i = 0; i < cols; i++) {
+        double val = std::round(X[i] * 1000.0) / 1000.0;
+        if (val == -0.0) val = 0.0;
+            
+        printf("x%d=%g", i + 1, val);
+        fprintf(out, "x%d=%g", i + 1, val);
+            
+        if (i < cols - 1) {
+            printf("; ");
+            fprintf(out, "; ");
+        }
     }
+    printf("\n");
     fprintf(out, "\n");
-
-    delete[] x;
 }
 
 int main() {
@@ -126,36 +148,35 @@ int main() {
     int M, N;
     fscanf(input_file, "%d %d", &M, &N);
     double **coeffitients = new double *[M];
-    N+=1;
     for (int i = 0; i < M; i++) {
-        coeffitients[i] = new double[N];
+        coeffitients[i] = new double[N+1];
         for (int j = 0; j < N; j++) {
             fscanf(input_file, "%lf", &coeffitients[i][j]);
         }
+        fscanf(input_file, "%lf", &coeffitients[i][N]);
     }
-
     double *X = new double[N];
     int *L = new int[N];
     int r = 0;
 
+    print_matrix_to_file(output_file, coeffitients, M, N+1);
     int status = triangularize(coeffitients, M, N, X, L, r);
-    
-    fprintf(output_file, "Triangular Matrix:\n");
-    print_matrix_to_file(output_file, coeffitients, M, N);
 
-    if (status == 1){
-        solve_and_write_roots(output_file, coeffitients, M, N);
-    }
-    else if (status == 0){
+    fprintf(output_file, "Triangular Matrix:\n");
+    print_matrix_to_file(output_file, coeffitients, M, N+1);
+
+    if (status == 0){
         printf("Inconsistent system \n");
         fprintf(output_file, "Inconsistent system \n");
     }
-    else if (status == -1){
-
+    else {
+        solve_and_write_roots(output_file, M, N, status, r, L, X);
     }
     
     for (int i = 0; i < M; i++) delete[] coeffitients[i];
     delete[] coeffitients;
+    delete[] X;
+    delete[] L;
 
     fclose(input_file);
     fclose(output_file);
