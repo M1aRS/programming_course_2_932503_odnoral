@@ -53,7 +53,8 @@ int triangularize(double **matrix, int rows, int cols) {
                 matrix[k][j] -= factor * matrix[i][j];
             }
         }
-    }
+    } //ttestasdfc
+
     for (int i = cols; i < rows; i++){
         if (std::abs(matrix[i][cols-1]) > 1e-12) {
             return 0; //матрица несовместна
