@@ -108,8 +108,42 @@ void read_matrix_and_make_index_neigbor_matrix(){
     fclose(fin);
     fclose(fout);
 }
+void read_index_neighbor_matrix_and_make_graphs(){
+    FILE *fin = fopen("output2.txt", "r");
+    FILE *fout = fopen("output3.txt", "w");
+    if (!fin) {
+        printf("Error: output2 file read error. \n");
+        if (fout) fclose(fout);
+        return;
+    }
+
+    int n, m_double;
+    fscanf(fin, "%d %d", &n, &m_double);
+    int *S = new int[n];
+    int *L = new int[n];
+    int *D = new int[m_double];
+
+    for (int i = 0; i < n; i++) fscanf(fin, "%d", &S[i]);
+    for (int i = 0; i < n; i++) fscanf(fin, "%d", &L[i]);
+    for (int i = 0; i < m_double; i++) fscanf(fin, "%d", &D[i]);
+    for (int i = 0; i < n; i++) {
+        for (int k = S[i]; k < S[i] + L[i]; k++) {
+            int j = D[k]; // смежная вершина
+            
+            if (i <= j) {
+                fprintf(fout, "%d %d\n", i+1, j+1);
+            }
+        }
+    }
+    delete[] S; delete[] L; delete[] D;
+    
+    fclose(fin);
+    fclose(fout);
+}
+
 int main() {
     read_input_and_make_matirx();
     read_matrix_and_make_index_neigbor_matrix();
+    read_index_neighbor_matrix_and_make_graphs();
     return 0;
 }
