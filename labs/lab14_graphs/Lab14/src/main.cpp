@@ -2,7 +2,16 @@
 #include <cstdio>
 
 // Lab 14
+void dfs(int u, int current_tree, int *S, int *L, int *D, int *visited) {
+    visited[u] = current_tree;
+    for (int k = S[u]; k < S[u] + L[u]; k++) {
+        int v = D[k];
+        if (visited[v] == 0) {
+            dfs(v, current_tree, S, L, D, visited);
+        }
+    }
 
+}
 void read_input_and_make_matirx(){
     FILE *fin = fopen("input1.txt", "r");
     FILE *fout = fopen("output1.txt", "w");
@@ -140,6 +149,7 @@ void read_index_neighbor_matrix_and_make_graphs(){
     fclose(fin);
     fclose(fout);
 }
+
 
 int main() {
     read_input_and_make_matirx();
