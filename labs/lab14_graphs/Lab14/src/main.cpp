@@ -149,11 +149,110 @@ void read_index_neighbor_matrix_and_make_graphs(){
     fclose(fin);
     fclose(fout);
 }
+void solve_genealogy(){
+    FILE *fin = fopen("genealogy_input.txt", "r");
+    if (!fin) {
+        printf("Error: genealogy input file read error. \n");
+        return;
+    }
+    
+    int n, u, v;
+    fscanf(fin, "%d", &n);
 
+    int **matrix = new int*[n];
+    int *present_citizens = new int[n];
+    for (int i = 0; i < n; i++){
+        present_citizens[i] = 0;
+        matrix[i] = new int[n];
+        for (int j = 0; j < n; j++){
+            matrix[i][j] = 0;
+        }
+    }
+
+    while (fscanf(fin, "%d %d", &u, &v) == 2) {
+        if (u == -1 && v == -1) {
+            break;
+        }
+        u--; v--;
+        matrix[u][v] = 1;
+        matrix[v][u] = 1;
+        present_citizens[u] = 1;
+        present_citizens[v] = 1;
+    }
+    fclose(fin);
+
+    FILE *fout = fopen("genealogy_output.txt", "w");
+    int *U = new int[n]; 
+    int *S = new int[n]; 
+    int *L = new int[n];
+    int D_size = 0;
+
+    for (int j = 0; j < n; j++) L[j] = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == 1) {
+                L[i]++;
+                D_size++;
+            }
+        }
+    }
+
+    S[0] = 0;
+    for (int j = 1; j < n; j++) {
+        S[j] = S[j-1] + L[j-1];
+    }
+
+    for (int j = 0; j < n; j++) U[j] = S[j];
+
+    int *D = new int[D_size];
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == 1) {
+                D[U[i]] = j;
+                U[i]++;
+            }
+        }
+    }
+
+    int *visited = new int[n];
+    for (int i = 0; i < n; i++) visited[i] = 0;
+    int trees_count = 0;
+    for (int i = 0; i < n; i++) {
+        if (visited[i] == 0) {
+            trees_count++;
+            dfs(i, trees_count, S, L, D, visited);
+        }
+    }
+
+    if (!fout) {
+        printf("Error: cannot create output_gen.txt file.\n");
+    } else {
+        fprintf(fout, "Families: %d\n\n", trees_count);
+        
+        for (int k = 1; k <= trees_count; k++) {
+            for (int i = 0; i < n; i++) {
+                if (visited[i] == k) {
+                    fprintf(fout, "%d ", i+1);
+                }
+            }
+            fprintf(fout, "\n");
+        }
+        fclose(fout);
+        printf("Completed! \n");
+    }
+
+    // Очистка памяти
+    for (int i = 0; i < n; i++) delete[] matrix[i];
+    delete[] matrix;
+    delete[] U; delete[] S; delete[] L; delete[] D;
+    delete[] present_citizens; delete[] visited;
+}
 
 int main() {
-    read_input_and_make_matirx();
+    /*read_input_and_make_matirx();
     read_matrix_and_make_index_neigbor_matrix();
-    read_index_neighbor_matrix_and_make_graphs();
+    read_index_neighbor_matrix_and_make_graphs();*/
+    solve_genealogy();
     return 0;
 }
