@@ -297,12 +297,102 @@ void solve_travel(){
     for (int i = 0; i < n; i++) delete[] matrix[i];
     delete[] matrix;
 }
+void solve_maze(){
+    FILE *fin = fopen("maze_input.txt", "r");
+    if (!fin) {
+        printf("Error: maze input file read error. \n");
+        return;
+    }
 
+    int R,C;
+    if (fscanf(fin, "%d%d", &R, &C) != 2) {
+        printf("Error: invalid maze input format.\n");
+        fclose(fin);
+        return;
+    }
+
+    char **maze = new char*[R];
+    int **dist = new int*[R];
+
+    for (int i = 0; i < R; i++) {
+        maze[i] = new char[C];
+        dist[i] = new int[C];
+    }
+    int start_r = -1, start_c = -1, end_r = -1, end_c = -1;
+
+    for (int i = 0; i < R; i++){
+        for (int j = 0; j < C; j++){
+            fscanf(fin, " %c", &maze[i][j]);
+            dist[i][j] = -1;
+            if (maze[i][j] == 's') { start_r = i; start_c = j; }
+            if (maze[i][j] == 'f') { end_r = i; end_c = j; }
+        }
+    }
+    fclose(fin);
+    //вверх, вниз, влево, вправо, вверх-влево, вверх-вправо, вниз-влево, вниз-вправо
+    int dr[8] = {-1,1,0,0,-1,-1,1,1};
+    int dc[8] = {0,0,-1,1,-1,1,-1,1};
+
+    int max_queue = R * C;
+    int *Qr = new int [max_queue]; int *Qc = new int [max_queue];
+    int head = 0, tail = 0;
+
+    Qr[tail] = start_r; Qc[tail] = start_c; tail++;
+    dist[start_r][start_c] = 0;
+    bool found = false;
+
+    while (head < tail) {
+        int r = Qr[head]; int c = Qc[head]; head++;
+
+        if (r == end_r && c == end_c) { found = true; break; }
+
+        for (int d = 0; d < 8; d++){
+            int nr = r + dr[d]; int nc = c + dc[d];
+            if (nr >= 0 && nr < R && nc >= 0 && nc < C) {
+                if (maze[nr][nc] != '#' && dist[nr][nc] == -1) {
+                    dist[nr][nc] = dist[r][c] + 1;
+                    Qr[tail] = nr; Qc[tail] = nc; tail++;
+                }
+            }
+        }
+    }
+
+    if (found){
+        int curr_r = end_r; int curr_c = end_c;
+        int curr_d = dist[end_r][end_c];
+
+        while (curr_d > 1){
+            for (int i = 0; i < 8; i++){
+                int nr = curr_r + dr[i]; int nc = curr_c + dc[i];
+
+                if (nr >= 0 && nr < R && nc >= 0 && nc < C){
+                    if (dist[nr][nc] == curr_d - 1){
+                        curr_r = nr; curr_c = nc; curr_d--;
+                        maze[curr_r][curr_c] = '*';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    FILE *fout = fopen("maze_output.txt", "w");
+    for (int i = 0; i < R; i++){
+        for (int j = 0; j < C; j++){
+            fprintf(fout, "%c", maze[i][j]);
+        }
+        fprintf(fout, "\n");
+    }
+    fclose(fout);
+    for (int i = 0; i < R; i++) { delete[] maze[i]; delete[] dist[i]; }
+    delete[] maze; delete[] dist; delete[] Qr; delete[] Qc;
+}
 int main() {
     /*read_input_and_make_matirx();
     read_matrix_and_make_index_neigbor_matrix();
     read_index_neighbor_matrix_and_make_graphs();
-    solve_genealogy();*/
-    solve_travel();
+    solve_genealogy();
+    solve_travel();*/
+    solve_maze();
     return 0;
 }
