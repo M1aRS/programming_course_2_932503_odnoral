@@ -356,7 +356,6 @@ void solve_maze(){
             }
         }
     }
-    bool is_path_exist = false;
     if (found){
         int curr_r = end_r; int curr_c = end_c;
         int curr_d = dist[end_r][end_c];
@@ -369,7 +368,6 @@ void solve_maze(){
                     if (dist[nr][nc] == curr_d - 1){
                         curr_r = nr; curr_c = nc; curr_d--;
                         maze[curr_r][curr_c] = '*';
-                        is_path_exist = true;
                         break;
                     }
                 }
@@ -384,7 +382,7 @@ void solve_maze(){
         }
         fprintf(fout, "\n");
     }
-    if (is_path_exist) {
+    if (found) {
         printf("Path found! Check maze_output.txt for details.\n");
     } 
     else {
