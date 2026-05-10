@@ -356,7 +356,7 @@ void solve_maze(){
             }
         }
     }
-
+    bool is_path_exist = false;
     if (found){
         int curr_r = end_r; int curr_c = end_c;
         int curr_d = dist[end_r][end_c];
@@ -369,6 +369,7 @@ void solve_maze(){
                     if (dist[nr][nc] == curr_d - 1){
                         curr_r = nr; curr_c = nc; curr_d--;
                         maze[curr_r][curr_c] = '*';
+                        is_path_exist = true;
                         break;
                     }
                 }
@@ -379,9 +380,16 @@ void solve_maze(){
     FILE *fout = fopen("maze_output.txt", "w");
     for (int i = 0; i < R; i++){
         for (int j = 0; j < C; j++){
-            fprintf(fout, "%c", maze[i][j]);
+            fprintf(fout, "%c ", maze[i][j]);
         }
         fprintf(fout, "\n");
+    }
+    if (is_path_exist) {
+        printf("Path found! Check maze_output.txt for details.\n");
+    } 
+    else {
+        printf("No path exists from start to finish.\n");
+        fprintf(fout, "No path exists from start to finish.\n");
     }
     fclose(fout);
     for (int i = 0; i < R; i++) { delete[] maze[i]; delete[] dist[i]; }
