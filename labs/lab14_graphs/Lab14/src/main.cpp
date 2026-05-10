@@ -2,6 +2,17 @@
 #include <cstdio>
 
 // Lab 14
+int count_dfs(int u, int target, int** matrix, int n){
+    if (u == target) return 1;
+
+    int count = 0;
+    for (int v = 0; v < n; v++){
+        if (matrix[u][v] == 1){
+            count += count_dfs(v, target, matrix, n);
+        }
+    }
+    return count;
+}
 void dfs(int u, int current_tree, int *S, int *L, int *D, int *visited) {
     visited[u] = current_tree;
     for (int k = S[u]; k < S[u] + L[u]; k++) {
@@ -248,11 +259,50 @@ void solve_genealogy(){
     delete[] U; delete[] S; delete[] L; delete[] D;
     delete[] present_citizens; delete[] visited;
 }
+void solve_travel(){
+    FILE *fin = fopen("travel_input.txt", "r");
+    if (!fin) {
+        printf("Error: travel input file read error. \n");
+        return;
+    }
+    int n, m, start, end;
+    fscanf(fin, "%d%d%d%d", &n, &m, &start, &end);
+    start--; end--;
+
+    int **matrix = new int*[n];
+    for (int i = 0; i < n; i++){
+        matrix[i] = new int[n];
+        for (int j = 0; j < n; j++){
+            matrix[i][j] = 0;
+        }
+    }
+
+    for (int k = 0; k < m; k++){
+        int u,v;
+        fscanf(fin, "%d %d", &u, &v);
+        u--; v--;
+        matrix[u][v] = 1;
+    }
+    fclose(fin);
+
+    int paths_count = count_dfs(start, end, matrix, n);
+    FILE *fout = fopen("travel_output.txt", "w");
+    if (!fout) {
+        printf("Error: cannot create travel_output.txt file.\n");
+    } else {
+        fprintf(fout, "Number of paths from %d to %d: %d\n", start+1, end+1, paths_count);
+        fclose(fout);
+        printf("Completed! \n");
+    }
+    for (int i = 0; i < n; i++) delete[] matrix[i];
+    delete[] matrix;
+}
 
 int main() {
     /*read_input_and_make_matirx();
     read_matrix_and_make_index_neigbor_matrix();
-    read_index_neighbor_matrix_and_make_graphs();*/
-    solve_genealogy();
+    read_index_neighbor_matrix_and_make_graphs();
+    solve_genealogy();*/
+    solve_travel();
     return 0;
 }
