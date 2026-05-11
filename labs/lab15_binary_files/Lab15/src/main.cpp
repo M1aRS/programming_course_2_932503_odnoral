@@ -52,15 +52,19 @@ void collor_filter(){
                     float new_b = row[b_idx] * coeff_B;
                     float new_g = row[g_idx] * coeff_G;
                     float new_r = row[r_idx] * coeff_R;
+                    
+                    row[b_idx] = (new_b > 255) ? 255 : (unsigned char)new_b;
+                    row[g_idx] = (new_g > 255) ? 255 : (unsigned char)new_g;
+                    row[r_idx] = (new_r > 255) ? 255 : (unsigned char)new_r;
                 }
             }
         }
         fwrite(row, sizeof(unsigned char), row_size, fout);
     }
-    /*int c;
+    int c;
     while ((c = fgetc(fin)) != EOF) {
         fputc(c, fout);
-    }*/
+    }
     delete[] row;
     fclose(fin); fclose(fout);
 }
