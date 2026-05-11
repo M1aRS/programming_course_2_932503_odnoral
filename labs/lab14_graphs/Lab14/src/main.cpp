@@ -2,6 +2,14 @@
 #include <cstdio>
 
 // Lab 14
+void dfs_check(int u, int** matrix, int* visited, int n) {
+    visited[u] = 1;
+    for (int v = 0; v < n; v++) {
+        if (matrix[u][v] == 1 && visited[v] == 0) {
+            dfs_check(v, matrix, visited, n);
+        }
+    }
+}
 int count_dfs(int u, int target, int** matrix, int n){
     if (u == target) return 1;
 
@@ -393,12 +401,96 @@ void solve_maze(){
     for (int i = 0; i < R; i++) { delete[] maze[i]; delete[] dist[i]; }
     delete[] maze; delete[] dist; delete[] Qr; delete[] Qc;
 }
+void solve_figures(){
+    FILE *fin = fopen("figures_input.txt", "r");
+    if (!fin) {
+        printf("Error: figures input file read error. \n");
+        return;
+    }
+
+    int n,m;
+    if (fscanf(fin, "%d%d", &n, &m) != 2) {
+        printf("Error: invalid figures input format.\n");
+        fclose(fin);
+        return;
+    }
+
+    int **matrix = new int*[n];
+    int *degree = new int[n];
+    int *visited = new int[n];
+
+    for (int i = 0; i < n; i++){
+        matrix[i] = new int[n];
+        degree[i] = 0;
+        visited[i] = 0;
+        for (int j = 0; j < n; j++){
+            matrix[i][j] = 0;
+        }
+    }
+
+    for (int k = 0; k < m; k++){
+        int u,v;
+        fscanf(fin, "%d %d", &u, &v);
+        u--; v--;
+        matrix[u][v] = 1;
+        matrix[v][u] = 1;
+        degree[u]++; degree[v]++;
+    }
+    fclose(fin);
+
+    int start_node = -1;
+    for (int i = 0; i < n; i++){
+        if (degree[i] > 0){
+            start_node = i;
+            break;
+        }
+    }
+    
+    FILE *fout = fopen("figures_output.txt", "w");
+    if (start_node == -1) {
+        printf("No edges in the graph.\n");
+        fprintf(fout, "No edges in the graph.\n");
+    }
+    else {
+        bool is_connected = true;
+        dfs_check(start_node, matrix, visited, n);
+        for (int i = 0; i < n; i++){
+            if (degree[i] > 0 && visited[i] == 0){
+                is_connected = false;
+                break;
+            }
+        }
+
+        int odd_count = 0; // Количество точек с нечетным числом линий
+        for (int i = 0; i < n; i++) {
+            if (degree[i] % 2 != 0) {
+                odd_count++;
+            }
+        }
+        
+        if (!is_connected) {
+            fprintf(fout, "3. Нельзя нарисовать эту фигуру (без наложения линий), не отрывая карандаша от бумаги.\n");
+        } else if (odd_count == 0) {
+            // Эйлеров цикл (все степени четные)
+            fprintf(fout, "1. Можно нарисовать эту фигуру, начиная и заканчивая рисование в одной и той же точке.\n");
+        } else if (odd_count == 2) {
+            // Эйлеров путь (ровно две нечетные степени)
+            fprintf(fout, "2. Можно нарисовать эту фигуру, начиная и заканчивая рисование в различных точках.\n");
+        } else {
+            // Ни того, ни другого (нечетных больше двух)
+            fprintf(fout, "3. Нельзя нарисовать эту фигуру (без наложения линий), не отрывая карандаша от бумаги.\n");
+        }
+        for (int i = 0; i < n; i++) delete[] matrix[i];
+        delete[] matrix; delete[] degree; delete[] visited; 
+    }
+}
 int main() {
     /*read_input_and_make_matirx();
     read_matrix_and_make_index_neigbor_matrix();
     read_index_neighbor_matrix_and_make_graphs();
     solve_genealogy();
-    solve_travel();*/
-    solve_maze();
+    solve_travel();
+    solve_maze();*/
+    solve_figures();
     return 0;
 }
